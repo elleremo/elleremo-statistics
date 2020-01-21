@@ -342,12 +342,14 @@ if ( ! class_exists( 'Elleremo_Statistics' ) ) {
 		/**
 		 * Создать нужные таблицы в базе данных
 		 */
-		public function create_db() {
+		public static function create_db() {
 
-			$charset_collate = $this->wpdb()->get_charset_collate();
+		    global  $wpdb;
+
+			$charset_collate = $wpdb->get_charset_collate();
 
 			$sql = "
-				CREATE TABLE IF NOT EXISTS {$this->get_table()} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->prefix}statistics (
 				  id bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
 				  post_id bigint(20) unsigned NOT NULL COMMENT 'ID поста',
 				  date date NOT NULL COMMENT 'Дата',
@@ -377,6 +379,11 @@ if ( ! class_exists( 'Elleremo_Statistics' ) ) {
 	 * Инициализация класса
 	 */
     elleremo_statistics();
+
+    /**
+     * Создание таблицы в базе
+     */
+    register_activation_hook( __FILE__, [ 'Elleremo_Statistics', 'create_db' ] );
 }
 
 // eof;
